@@ -61,7 +61,7 @@ class QLearningAgent(ReinforcementAgent):
           Should return 0.0 if we have never seen a state
           or the Q node value otherwise
         """
-        "*** YOUR CODE HERE ***"
+        
         #util.raiseNotDefined()
         if (state,action) in self.qvalues: # (state,action) is the key; (s,a) is the key (s,a): 0.5
             # return the associated q-value
@@ -70,8 +70,11 @@ class QLearningAgent(ReinforcementAgent):
         else:
             test = 0 # just for testing
             # update the dictionary self.qvalues with this unseen (s,a) and initialize its value as 0.0
-            # self.qvalues[(s,a)]=0.0
-            # return this q-value     
+            # return this q-value
+            
+            # Simply set the qvalue for the given state and action to zero as action has not been used yet
+            self.qvalues[(state,action)] = 0.0
+            return 0.0
             
 
     def computeValueFromQValues(self, state):
@@ -81,8 +84,26 @@ class QLearningAgent(ReinforcementAgent):
           there are no legal actions, which is the case at the
           terminal state, you should return a value of 0.0.
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        # Acquires all state actions from the state
+        stateActions = self.getLegalActions(state)
+        
+        # If there are no actions for this state, return 0.0
+        if not stateActions:
+            return 0.0
+        
+        # Preparing a current but lowest possible Q-Value
+        maxQ = 0.0
+
+        # Lastly for each action in the state, we obtain each Q-value 
+        for action in stateActions:
+            currQ = self.getQValue(state, action)
+            if currQ > maxQ:
+                maxQ = currQ
+
+        return maxQ
+
+        #util.raiseNotDefined()
 
     def computeActionFromQValues(self, state):
         """
@@ -120,10 +141,19 @@ class QLearningAgent(ReinforcementAgent):
           NOTE: You should never call this function,
           it will be called on your behalf
         """
-        "*** YOUR CODE HERE ***"
-        #util.raiseNotDefined()
-        
-        # self.qvalues[(state,action)] = ...
+        currQ = self.getQValue(state, action)
+
+        # To start estimating the next Q-Value we use what we know already about the next state and obtain it via the computeValueFromQValues()
+        nextQ = self.computeValueFromQValues(nextState)
+
+        # Using both currQ and nextQ we can effectively solve for updatedQ given other arguments too. The following is the exact temporal-difference or TD learning equation
+        sample = reward + (self.discount * nextQ)
+        updatedQ = currQ + (self.alpha * (sample - currQ)) 
+
+        # Adds the Q-Value into our dictionary
+        self.qvalues[(state,action)] = updatedQ
+
+        return
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
