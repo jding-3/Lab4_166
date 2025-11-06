@@ -104,7 +104,7 @@ class QLearningAgent(ReinforcementAgent):
 
         #util.raiseNotDefined()
 
-    def computeActionFromQValues(self, state):
+     def computeActionFromQValues(self, state):
         """
           Compute the best action to take in a state.  Note that if there
           are no legal actions, which is the case at the terminal state,
@@ -117,17 +117,12 @@ class QLearningAgent(ReinforcementAgent):
         if not actions:
             return None
         
-        best_q = float('-inf')
         best_actions = []
         
         for action in actions:
-            q_value = self.getQValue(state, action)
-            if (q_value > best_q):
-                best_q = q_value
-                best_actions = [action] #reset list to hold current best action
-            elif q_value == best_q:
+            if (self.getQValue(state, action) == self.computeValueFromQValues(state)):
                 best_actions.append(action)
-
+        
         return random.choice(best_actions)
         #util.raiseNotDefined()
 
