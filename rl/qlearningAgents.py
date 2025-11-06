@@ -15,13 +15,12 @@
 from game import *
 from learningAgents import ReinforcementAgent
 from featureExtractors import *
-from backend import ReplayMemory
+#from backend import ReplayMemory
 
-import nn
-import model
-import backend
-import gridworld
-
+#import nn
+#import model
+#import backend
+#import gridworld
 
 import random,util,math
 import numpy as np
@@ -118,7 +117,7 @@ class QLearningAgent(ReinforcementAgent):
         if not actions:
             return None
         
-        best_q = float('inf')
+        best_q = float('-inf')
         best_actions = []
         
         for action in actions:
