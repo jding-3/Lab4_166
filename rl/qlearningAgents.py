@@ -113,7 +113,24 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
         # YL: if there are multiple best actions, then choose a random one
-        util.raiseNotDefined()
+        actions = self.getLegalActions(state)
+
+        if not actions:
+            return None
+        
+        best_q = float('inf')
+        best_actions = []
+        
+        for action in actions:
+            q_value = self.getQValue(state, action)
+            if (q_value > best_q):
+                best_q = q_value
+                best_actions = [action] #reset list to hold current best action
+            elif q_value == best_q:
+                best_actions.append(action)
+
+        return random.choice(best_actions)
+        #util.raiseNotDefined()
 
     def getAction(self, state):
         """
